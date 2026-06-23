@@ -32,12 +32,29 @@ def detect_platform(filename):
 
 def clean_lazada(df):
     columns_to_keep = [
-        'orderItemId','lazadaId','sellerSku','lazadaSku',"createTime",
-        'updateTime','rtsSla','ttsSla','orderNumber','deliveredDate',
-        'paidPrice','unitPrice','sellerDiscountTotal','shippingFee',
-        'itemName','variation','shippingProvider','trackingCode','status',
-        'buyerFailedDeliveryReturnInitiator','buyerFailedDeliveryReason',
-        'buyerFailedDeliveryDetail','refundAmount'
+        'orderItemId',
+        'lazadaId',
+        'sellerSku',
+        'lazadaSku',
+        'createTime',
+        'updateTime',
+        'rtsSla',
+        'ttsSla',
+        'orderNumber',
+        'deliveredDate',
+        'paidPrice',
+        'unitPrice',
+        'sellerDiscountTotal',
+        'shippingFee',
+        'itemName',
+        'variation',
+        'shippingProvider',
+        'trackingCode',
+        'status',
+        'buyerFailedDeliveryReturnInitiator',
+        'buyerFailedDeliveryReason',
+        'buyerFailedDeliveryDetail',
+        'refundAmount'
     ]
     df = df[columns_to_keep].copy()
 
@@ -65,7 +82,43 @@ def clean_lazada(df):
 
 
 def clean_shopee(df):
-    columns_to_keep = [ ... ]  # KEEP SAME AS YOUR ORIGINAL (paste full list)
+    columns_to_keep = ['Order ID',
+        'Order Status',
+        'Cancel reason',
+        'Return / Refund Status',
+        'Tracking Number*',
+        'Shipping Option',
+        'Estimated Ship Out Date',
+        'Ship Time',
+        'Order Creation Date',
+        'Order Paid Time',
+        'Parent SKU Reference No.',
+        'Product Name',
+        'SKU Reference No.',
+        'Variation Name',
+        'Original Price',
+        'Deal Price',
+        'Quantity',
+        'Returned quantity',
+        'Product Subtotal',
+        'Total Discount(PHP)',
+        'Price Discount(from Seller)(PHP)',
+        'Shopee Rebate(PHP)',
+        'Seller Voucher(PHP)',
+        'Coin Cashback Voucher Amount Sponsored by Seller',
+        #'Seller Absorbed Coin Cashback',
+        'Shopee Voucher(PHP)',
+        'Shopee Coins Offset(PHP)',
+        'Credit Card Discount Total(PHP)',
+        "Products' Price Paid by Buyer (PHP)",
+        'Buyer Paid Shipping Fee',
+        'Shipping Rebate Estimate',
+        'Reverse Shipping Fee',
+        'Service Fee',
+        'Grand Total',
+        'Estimated Shipping Fee',
+        # 'Username (Buyer)'
+    ]
     df = df[columns_to_keep].copy()
 
     mask = (
@@ -97,11 +150,27 @@ def clean_shopee(df):
 
 def clean_zalora(df):
     columns_to_keep = [
-        'Order Item Id','Zalora Id','Seller SKU','Zalora SKU','Created at',
-        'Updated at','Order Number','Paid Price','Unit Price','Tax Amount',
-        'Shipping Fee','Wallet Credits','Item Name','Variation',
-        'Shipping Provider','Tracking Code','Status','Reason',
-        'voucher: discount','Store Credits','Shipping Voucher'
+        'Order Item Id',
+        'Zalora Id',
+        'Seller SKU',
+        'Zalora SKU',
+        'Created at',
+        'Updated at',
+        'Order Number',
+        'Paid Price',
+        'Unit Price',
+        'Tax Amount',
+        'Shipping Fee',
+        'Wallet Credits',
+        'Item Name',
+        'Variation',
+        'Shipping Provider',
+        'Tracking Code',
+        'Status',
+        'Reason',
+        'voucher: discount',
+        'Store Credits',
+        'Shipping Voucher'
     ]
     df = df[columns_to_keep].copy()
 
@@ -122,7 +191,40 @@ def clean_zalora(df):
 
 
 def clean_shopify(df):
-    columns_to_keep = [ ... ]  # paste full list
+    columns_to_keep = [ 
+        "Name",
+        "Email",
+        "Financial Status",
+        "Paid at",
+        "Fulfillment Status",
+        "Fulfilled at",
+        "Accepts Marketing",
+        "Subtotal",
+        "Shipping",
+        "Taxes",
+        "Total",
+        "Discount Code",
+        "Discount Amount",
+        "Shipping Method",
+        "Created at",
+        "Lineitem quantity",
+        "Lineitem name",
+        "Lineitem price",
+        "Lineitem compare at price",
+        "Lineitem sku",
+        "Payment Method",
+        "Payment Reference",
+        "Refunded Amount",
+        "Outstanding Balance",
+        "Id",
+        "Lineitem discount",
+        "Tax 1 Name",
+        "Tax 1 Value",
+        "Payment ID",
+        "Payment Terms Name",
+        "Next Payment Due At",
+        "Payment References"
+    ] 
     for col in columns_to_keep:
         if col not in df.columns:
             df[col] = pd.NA
@@ -150,7 +252,44 @@ def clean_shopify(df):
 
 
 def clean_tiktok(df):
-    columns_to_keep = [ ... ]  # paste full list
+    columns_to_keep = [
+      "Order ID",
+      "Order Status",
+      "Order Substatus",
+      "Cancelation/Return Type",
+      "SKU ID",
+      "Seller SKU",
+      "Product Name",
+      "Variation",
+      "Quantity",
+      "Sku Quantity of return",
+      "SKU Unit Original Price",
+      "SKU Subtotal Before Discount",
+      "SKU Platform Discount",
+      "SKU Seller Discount",
+      "SKU Subtotal After Discount",
+      "Shipping Fee After Discount",
+      "Original Shipping Fee",
+      "Shipping Fee Seller Discount",
+      "Shipping Fee Platform Discount",
+      "Payment platform discount",
+      "Taxes",
+      "Order Amount",
+      "Order Refund Amount",
+      "Created Time",
+      "Paid Time",
+      "RTS Time",
+      "Shipped Time",
+      "Delivered Time",
+      "Cancelled Time",
+      "Cancel By",
+      "Cancel Reason",
+      "Tracking ID",
+      "Shipping Provider Name",
+      # "Buyer Username",
+      "Product Category",
+      "Package ID"
+    ] 
     df = df[columns_to_keep].copy()
 
     df['Created Time'] = pd.to_datetime(df['Created Time'],
@@ -173,7 +312,6 @@ def clean_tiktok(df):
         lambda x: str(int(x)) if pd.notnull(x) else None)
 
     return df
-
 
 # =========================
 # UI
