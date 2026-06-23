@@ -5,11 +5,11 @@ import io
 
 st.set_page_config(page_title="Order Cleaner", layout="wide")
 
-st.title("📊 Ecommerce Order Cleaner")
+st.title("📊 Raw Data Cleaning Automation")
 
 # Upload file
 uploaded_file = st.file_uploader(
-    "Upload your raw file (Lazada, Shopee, Zalora, Shopify, TikTok)",
+    "Upload your raw file (.xlsx or .csv)",
     type=["xlsx", "csv"]
 )
 
