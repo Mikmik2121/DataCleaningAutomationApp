@@ -2,18 +2,15 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import io
+import zipfile
 
-st.set_page_config(page_title="Order Cleaner", layout="wide")
+st.set_page_config(page_title="Ecommerce Cleaner", layout="wide")
 
 st.title("📊 Raw Data Cleaning Automation")
 
-# Upload file
-uploaded_file = st.file_uploader(
-    "Upload your raw file (.xlsx or .csv)",
-    type=["xlsx", "csv"]
-)
-
-# Detect platform
+# =========================
+# PLATFORM DETECTION
+# =========================
 def detect_platform(filename):
     name = filename.upper()
     if "LAZADA" in name:
@@ -29,73 +26,226 @@ def detect_platform(filename):
     return None
 
 
-# ===== CLEANING FUNCTIONS (simplified versions of yours) ===== #
+# =========================
+# CLEANING FUNCTIONS (FULL)
+# =========================
 
 def clean_lazada(df):
-    df['createTime'] = pd.to_datetime(df['createTime'], errors='coerce')
-    df = df.sort_values(by='createTime')
+    columns_to_keep = [
+        'orderItemId','lazadaId','sellerSku','lazadaSku',"createTime",
+        'updateTime','rtsSla','ttsSla','orderNumber','deliveredDate',
+        'paidPrice','unitPrice','sellerDiscountTotal','shippingFee',
+        'itemName','variation','shippingProvider','trackingCode','status',
+        'buyerFailedDeliveryReturnInitiator','buyerFailedDeliveryReason',
+        'buyerFailedDeliveryDetail','refundAmount'
+    ]
+    df = df[columns_to_keep].copy()
+
+    df['createTime'] = pd.to_datetime(df['createTime'], format='%d %b %Y %H:%M')
+
+    col_index = df.columns.get_loc('createTime')
+    df.insert(col_index, "createTime(Date)", df['createTime'].dt.strftime('%B %d, %Y'))
+    df.insert(col_index + 1, "Time", df['createTime'].dt.strftime('%H:%M:%S'))
+
+    df = df.drop(columns=["createTime"])
+
+    df['Date_sort'] = pd.to_datetime(df['createTime(Date)'], format='%B %d, %Y')
+    df['Time_sort'] = pd.to_datetime(df['Time'], format='%H:%M:%S').dt.time
+
+    df = df.sort_values(by=['Date_sort', 'Time_sort'])
+
+    df = df.drop(columns=['Date_sort', 'Time_sort'])
+
+    df['paidPrice'] = df['paidPrice'].astype(float)
+
+    for col in ['orderItemId','lazadaId','orderNumber']:
+        df[col] = df[col].astype(str)
+
     return df
+
 
 def clean_shopee(df):
-    df['Order Creation Date'] = pd.to_datetime(df['Order Creation Date'], errors='coerce')
-    df = df.sort_values(by='Order Creation Date')
+    columns_to_keep = [ ... ]  # KEEP SAME AS YOUR ORIGINAL (paste full list)
+    df = df[columns_to_keep].copy()
+
+    mask = (
+        df['Return / Refund Status'].notna() &
+        (df['Return / Refund Status'].astype(str).str.strip() != '')
+    )
+    df.loc[mask, 'Order Status'] = df.loc[mask, 'Return / Refund Status']
+
+    df['Order Creation Date'] = pd.to_datetime(df['Order Creation Date'], format='%Y-%m-%d %H:%M')
+
+    col_index = df.columns.get_loc("Order Creation Date")
+    df.insert(col_index, "Order Creation Date (Date)", df['Order Creation Date'].dt.strftime('%B %d, %Y'))
+    df.insert(col_index + 1, "Time", df['Order Creation Date'].dt.strftime('%H:%M:%S'))
+
+    df = df.drop(columns=["Order Creation Date"])
+
+    df['Date_sort'] = pd.to_datetime(df['Order Creation Date (Date)'], format='%B %d, %Y')
+    df['Time_sort'] = pd.to_datetime(df['Time'], format='%H:%M:%S').dt.time
+
+    df = df.sort_values(by=['Date_sort', 'Time_sort'])
+
+    df = df.drop(columns=['Date_sort', 'Time_sort'])
+
+    df['Product Subtotal'] = df['Product Subtotal'].astype(float)
+    df['Quantity'] = df['Quantity'].astype(int)
+
     return df
+
 
 def clean_zalora(df):
-    df['Created at'] = pd.to_datetime(df['Created at'], errors='coerce')
-    df = df.sort_values(by='Created at')
+    columns_to_keep = [
+        'Order Item Id','Zalora Id','Seller SKU','Zalora SKU','Created at',
+        'Updated at','Order Number','Paid Price','Unit Price','Tax Amount',
+        'Shipping Fee','Wallet Credits','Item Name','Variation',
+        'Shipping Provider','Tracking Code','Status','Reason',
+        'voucher: discount','Store Credits','Shipping Voucher'
+    ]
+    df = df[columns_to_keep].copy()
+
+    df['Created at'] = pd.to_datetime(df['Created at'], format='%Y-%m-%d %H:%M:%S', errors='coerce')
+    df = df.sort_values(by=['Created at'])
+
+    df['Created at'] = df['Created at'].dt.strftime('%B %d, %Y')
+
+    df['Paid Price'] = pd.to_numeric(df['Paid Price'], errors='coerce').fillna(0)
+    df['Wallet Credits'] = pd.to_numeric(df['Wallet Credits'], errors='coerce').fillna(0)
+
+    col_index = df.columns.get_loc("Paid Price")
+    df.insert(col_index, "Amount", df['Paid Price'] + df['Wallet Credits'])
+
+    df['Order Number'] = df['Order Number'].astype(str)
+
     return df
+
 
 def clean_shopify(df):
-    df['Created at'] = pd.to_datetime(df['Created at'], errors='coerce')
+    columns_to_keep = [ ... ]  # paste full list
+    for col in columns_to_keep:
+        if col not in df.columns:
+            df[col] = pd.NA
+
+    df = df[columns_to_keep].copy()
+
+    cols_to_fill = ['Financial Status', 'Fulfillment Status']
+    df[cols_to_fill] = df.groupby('Name')[cols_to_fill].transform('ffill')
+
+    def try_parse_datetime(dt_str):
+        from datetime import datetime
+        for fmt in ["%Y-%m-%d %H:%M:%S %z","%d/%m/%Y %I:%M:%S %p"]:
+            try:
+                return datetime.strptime(str(dt_str), fmt)
+            except:
+                continue
+        return pd.to_datetime(dt_str, errors='coerce')
+
+    df['Created at'] = df['Created at'].apply(try_parse_datetime)
     df = df.sort_values(by='Created at')
+
+    df['Created at'] = pd.to_datetime(df['Created at']).dt.strftime('%B %d, %Y')
+
     return df
+
 
 def clean_tiktok(df):
-    df['Created Time'] = pd.to_datetime(df['Created Time'], errors='coerce')
-    df = df.sort_values(by='Created Time')
+    columns_to_keep = [ ... ]  # paste full list
+    df = df[columns_to_keep].copy()
+
+    df['Created Time'] = pd.to_datetime(df['Created Time'],
+                                        format="%m/%d/%Y %I:%M:%S %p",
+                                        errors='coerce')
+
+    df = df.sort_values(by='Created Time', na_position='last')
+
+    df['Created Time'] = df['Created Time'].dt.strftime('%B %d, %Y')
+
+    df['SKU Subtotal After Discount'] = pd.to_numeric(
+        df['SKU Subtotal After Discount'], errors='coerce').fillna(0)
+
+    df['Quantity'] = pd.to_numeric(df['Quantity'], errors='coerce').fillna(0).astype(int)
+
+    for col in ['Order ID','SKU ID']:
+        df[col] = df[col].astype(str)
+
+    df['Package ID'] = df['Package ID'].apply(
+        lambda x: str(int(x)) if pd.notnull(x) else None)
+
     return df
 
 
-# ===== MAIN LOGIC ===== #
+# =========================
+# UI
+# =========================
 
-if uploaded_file:
-    platform = detect_platform(uploaded_file.name)
+uploaded_files = st.file_uploader(
+    "Upload files",
+    type=["xlsx","csv"],
+    accept_multiple_files=True
+)
 
-    if platform is None:
-        st.error("❌ Could not detect platform from filename.")
-    else:
-        st.success(f"Detected platform: {platform.upper()}")
+manual_override = st.selectbox(
+    "Manual Platform Override (optional)",
+    ["Auto Detect","lazada","shopee","zalora","shopify","tiktok"]
+)
 
-        # Read file
-        if uploaded_file.name.endswith(".csv"):
-            df = pd.read_csv(uploaded_file)
-        else:
-            df = pd.read_excel(uploaded_file)
+if uploaded_files:
+    zip_buffer = io.BytesIO()
+    zip_file = zipfile.ZipFile(zip_buffer, "w")
 
-        # Clean
-        if platform == "lazada":
-            df_clean = clean_lazada(df)
-        elif platform == "shopee":
-            df_clean = clean_shopee(df)
-        elif platform == "zalora":
-            df_clean = clean_zalora(df)
-        elif platform == "shopify":
-            df_clean = clean_shopify(df)
-        elif platform == "tiktok":
-            df_clean = clean_tiktok(df)
+    for file in uploaded_files:
 
-        st.subheader("Preview (Cleaned Data)")
-        st.dataframe(df_clean.head(50))
+        platform = detect_platform(file.name) if manual_override == "Auto Detect" else manual_override
 
-        # Convert to Excel in memory
-        output = io.BytesIO()
-        df_clean.to_excel(output, index=False)
-        output.seek(0)
+        st.write(f"### 📄 {file.name}")
+        st.write(f"Platform: **{platform.upper()}**")
 
-        st.download_button(
-            label="⬇️ Download Cleaned File",
-            data=output,
-            file_name=f"{platform}_cleaned.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
+        try:
+            if file.name.endswith(".csv"):
+                df = pd.read_csv(file)
+            else:
+                df = pd.read_excel(file)
+
+            if platform == "lazada":
+                cleaned = clean_lazada(df)
+            elif platform == "shopee":
+                cleaned = clean_shopee(df)
+            elif platform == "zalora":
+                cleaned = clean_zalora(df)
+            elif platform == "shopify":
+                cleaned = clean_shopify(df)
+            elif platform == "tiktok":
+                cleaned = clean_tiktok(df)
+            else:
+                st.error("Unknown platform")
+                continue
+
+            st.dataframe(cleaned.head(20))
+
+            output = io.BytesIO()
+            cleaned.to_excel(output, index=False)
+            output.seek(0)
+
+            filename = file.name.replace(".", "_cleaned.")
+
+            st.download_button(
+                f"Download {file.name}",
+                data=output,
+                file_name=filename
+            )
+
+            zip_file.writestr(filename, output.getvalue())
+
+        except Exception as e:
+            st.error(f"Error: {e}")
+
+    zip_file.close()
+
+    st.divider()
+
+    st.download_button(
+        "⬇️ Download ALL as ZIP",
+        data=zip_buffer.getvalue(),
+        file_name="cleaned_files.zip"
+    )
