@@ -21,7 +21,9 @@ def detect_platform(filename):
         return "zalora"
     elif "SHOPIFY" in name:
         return "shopify"
-    elif "TIKTOK" in name:
+    elif "SW_TIKTOK" in name:
+        return "tiktok (Sunnywood)"
+    elif "TIKTOK" in name and "SW" not in name:
         return "tiktok"
     return None
 
@@ -403,7 +405,7 @@ uploaded_files = st.file_uploader(
 
 manual_override = st.selectbox(
     "Manual Platform Override (optional)",
-    ["Auto Detect","lazada","shopee","zalora","shopify","tiktok"]
+    ["Auto Detect","lazada","shopee","zalora","shopify","tiktok", "tiktok (Sunnywood)"]
 )
 
 if uploaded_files:
@@ -433,6 +435,8 @@ if uploaded_files:
                 cleaned = clean_shopify(df)
             elif platform == "tiktok":
                 cleaned = clean_tiktok(df)
+            elif platform == "tiktok (Sunnywood)":
+                cleaned = clean_SW_tiktok(df)
             else:
                 st.error("Unknown platform")
                 continue
