@@ -313,6 +313,84 @@ def clean_tiktok(df):
 
     return df
 
+def clean_SW_tiktok(df):
+    columns_to_keep = [
+      "Order ID",
+      "Order Status",
+      "Order Substatus",
+      "Cancelation/Return Type",
+      "SKU ID",
+      "Seller SKU",
+      "Product Name",
+      "Variation",
+      "Quantity",
+      "Sku Quantity of return",
+      "SKU Unit Original Price",
+      "SKU Subtotal Before Discount",
+      "SKU Platform Discount",
+      "SKU Seller Discount",
+      "SKU Subtotal After Discount",
+      "Shipping Fee After Discount",
+      "Original Shipping Fee",
+      "Shipping Fee Seller Discount",
+      "Shipping Fee Platform Discount",
+      "Payment platform discount",
+      "Taxes",
+      "Order Amount",
+      "Order Refund Amount",
+      "Created Time",
+      "Paid Time",
+      "RTS Time",
+      "Shipped Time",
+      "Delivered Time",
+      "Cancelled Time",
+      "Cancel By",
+      "Cancel Reason",
+      "Tracking ID",
+      "Shipping Provider Name",
+      # "Buyer Username",
+      "Product Category",
+      "Package ID"
+    ] 
+    df = df[columns_to_keep].copy()
+    """
+    df['Created Time'] = pd.to_datetime(df['Created Time'],
+                                        format="%m/%d/%Y %I:%M:%S %p",
+                                        errors='coerce')
+
+    df = df.sort_values(by='Created Time', na_position='last')
+
+    df['Created Time'] = df['Created Time'].dt.strftime('%B %d, %Y')
+    """
+
+    df['Created Time'] = pd.to_datetime(df['Created Time'], format="%m/%d/%Y %I:%M:%S %p", errors='coerce')
+    
+    col_index = df.columns.get_loc('Created Time')
+    df.insert(col_index, "Created Time(Date)", df['Created Time'].dt.strftime('%B %d, %Y'))
+    df.insert(col_index + 1, "Time", df['Created Time'].dt.strftime('%H:%M:%S'))
+
+    df = df.drop(columns=["Created Time"])
+
+    df['Date_sort'] = pd.to_datetime(df['Created Time(Date)'], format='%B %d, %Y')
+    df['Time_sort'] = pd.to_datetime(df['Time'], format='%H:%M:%S').dt.time
+
+    df = df.sort_values(by=['Date_sort', 'Time_sort'])
+
+    df = df.drop(columns=['Date_sort', 'Time_sort'])
+    
+    df['SKU Subtotal After Discount'] = pd.to_numeric(
+        df['SKU Subtotal After Discount'], errors='coerce').fillna(0)
+
+    df['Quantity'] = pd.to_numeric(df['Quantity'], errors='coerce').fillna(0).astype(int)
+
+    for col in ['Order ID','SKU ID']:
+        df[col] = df[col].astype(str)
+
+    df['Package ID'] = df['Package ID'].apply(
+        lambda x: str(int(x)) if pd.notnull(x) else None)
+
+    return df
+
 # =========================
 # UI
 # =========================
