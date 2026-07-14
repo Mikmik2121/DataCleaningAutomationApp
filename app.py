@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import io
+import os
 import zipfile
 
 st.set_page_config(page_title="Ecommerce Cleaner", layout="wide")
@@ -447,7 +448,8 @@ if uploaded_files:
             cleaned.to_excel(output, index=False)
             output.seek(0)
 
-            filename = file.name.replace(".", "_cleaned.")
+            base, ext = os.path.splitext(file.name)
+            filename = f"{base}_cleaned.xlsx"
 
             st.download_button(
                 f"Download {file.name}",
