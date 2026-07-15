@@ -8,7 +8,11 @@ import zipfile
 st.set_page_config(page_title="Ecommerce Cleaner", layout="wide")
 
 st.title("📊 Raw Data Processing Tool")
-st.subheader("Upload Files Here:")
+st.subheader("Instructions:")
+st.write("- Upload .xlsx and .csv files (csv files for Shopify only).")
+st.write("- If Auto detector doesn't work, you can manually set the platform of the files you want to format.")
+st.write("- Wait for the app to process your data until a 'Download ALL as ZIP' button appears at the very bottom of the page. ")
+st.write("- Download your clean files and you're done! :DD ")
 
 # =========================
 # PLATFORM DETECTION
@@ -357,15 +361,6 @@ def clean_SW_tiktok(df):
       "Package ID"
     ] 
     df = df[columns_to_keep].copy()
-    """
-    df['Created Time'] = pd.to_datetime(df['Created Time'],
-                                        format="%m/%d/%Y %I:%M:%S %p",
-                                        errors='coerce')
-
-    df = df.sort_values(by='Created Time', na_position='last')
-
-    df['Created Time'] = df['Created Time'].dt.strftime('%B %d, %Y')
-    """
 
     df['Created Time'] = pd.to_datetime(df['Created Time'], format="%m/%d/%Y %I:%M:%S %p", errors='coerce')
     
