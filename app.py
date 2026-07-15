@@ -14,6 +14,8 @@ st.write("- If Auto detector doesn't work, you can manually set the platform of 
 st.write("- Wait for the app to process your data until a 'Download ALL as ZIP' button appears at the very bottom of the page. ")
 st.write("- Download your clean files and you're done! :DD ")
 
+st.divider()
+
 # =========================
 # PLATFORM DETECTION
 # =========================
