@@ -7,7 +7,7 @@ import zipfile
 
 st.set_page_config(page_title="Ecommerce Cleaner", layout="wide")
 
-st.title("📊 Raw Data Cleaning Automation")
+st.title("📊 Raw Data Processing Tool")
 
 # =========================
 # PLATFORM DETECTION
@@ -22,9 +22,9 @@ def detect_platform(filename):
         return "zalora"
     elif "SHOPIFY" in name:
         return "shopify"
-    elif "SW_TIKTOK" in name:
+    elif "SW_TIKTOK" in name or "SUNNYWOOD_TIKTOK" in name:
         return "tiktok (Sunnywood)"
-    elif "TIKTOK" in name and "SW" not in name:
+    elif "TIKTOK" in name and "SW" not in name and "SUNNYWOOD_TIKTOK" not in name:
         return "tiktok"
     return None
 
