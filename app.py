@@ -407,9 +407,8 @@ manual_override = st.selectbox(
     ["Auto Detect","lazada","shopee","zalora","shopify","tiktok", "tiktok (Sunnywood)"]
 )
 
-st.subheader("Progress:")
-
 st.divider()
+st.subheader("Progress:")
 
 # Progress UI
 progress_bar = st.progress(0)
