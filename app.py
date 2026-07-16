@@ -396,11 +396,23 @@ def clean_SW_tiktok(df):
 # UI
 # =========================
 
+st.subheader("Upload Files")
+
+with st.container(border=True):
+    uploaded_files = st.file_uploader(
+        label="Drag & drop your Excel/CSV files here",
+        type=["xlsx", "csv"],
+        accept_multiple_files=True,
+        help="You can upload multiple files at once.",
+        width="stretch"
+    )
+"""
 uploaded_files = st.file_uploader(
     "Upload files",
     type=["xlsx","csv"],
     accept_multiple_files=True
 )
+"""
 
 manual_override = st.selectbox(
     "Manual Platform Override (optional)",
