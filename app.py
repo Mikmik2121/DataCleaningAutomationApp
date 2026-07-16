@@ -406,13 +406,6 @@ with st.container(border=True):
         help="You can upload multiple files at once.",
         width="stretch"
     )
-"""
-uploaded_files = st.file_uploader(
-    "Upload files",
-    type=["xlsx","csv"],
-    accept_multiple_files=True
-)
-"""
 
 manual_override = st.selectbox(
     "Manual Platform Override (optional)",
