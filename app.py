@@ -407,11 +407,18 @@ manual_override = st.selectbox(
     ["Auto Detect","lazada","shopee","zalora","shopify","tiktok", "tiktok (Sunnywood)"]
 )
 
+# Progress UI
+progress_bar = st.progress(0)
+progress_text = st.empty()
+
+# Processing uploaded files
 if uploaded_files:
+    total_files = len(uploaded_files)
+    
     zip_buffer = io.BytesIO()
     zip_file = zipfile.ZipFile(zip_buffer, "w")
 
-    for file in uploaded_files:
+    for i, file in enumerate(uploaded_files, start=1):
 
         platform = detect_platform(file.name) if manual_override == "Auto Detect" else manual_override
 
@@ -459,8 +466,16 @@ if uploaded_files:
 
         except Exception as e:
             st.error(f"Error: {e}")
+            
+        # Update progress
+        progress = i / total_files
+        progress_bar.progress(progress)
+        progress_text.text(f"Processing files... {i}/{total_files}")
 
     zip_file.close()
+
+    progress_bar.progress(1.0)
+    progress_text.success("✅ All files processed successfully!")
 
     st.divider()
 
