@@ -9,7 +9,7 @@ st.set_page_config(page_title="Ecommerce Cleaner", layout="wide")
 
 st.title("📊 Raw Data Processing Tool")
 st.subheader("Instructions:")
-st.write("- Upload .xlsx and .csv files (csv files for Shopify only).")
+st.write("- Upload .xlsx and .csv files (csv files for Shopify only). Before uploading, rename the files using this format: <BRAND>_<PLATFORM> (ex. VANS_SHOPEE)")
 st.write("- If Auto detector doesn't work, you can manually set the platform of the files you want to format.")
 st.write("- Wait for the app to process your data until a 'Download ALL as ZIP' button appears at the very bottom of the page. ")
 st.write("- Download your clean files and you're done! :DD ")
