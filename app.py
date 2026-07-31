@@ -87,7 +87,7 @@ def clean_lazada(df):
     df['paidPrice'] = df['paidPrice'].astype(float)
     df['platformDiscountTotal'] = df['platformDiscountTotal'].astype(float)
 
-    df['paidPrice'] = df['paidPrice'] - df['platformDiscountTotal']
+    df['paidPrice'] = df['paidPrice'] + df['platformDiscountTotal']
 
     df = df.drop(columns=["platformDiscountTotal"])
 
