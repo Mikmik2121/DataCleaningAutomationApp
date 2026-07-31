@@ -84,9 +84,11 @@ def clean_lazada(df):
     df = df.drop(columns=['Date_sort', 'Time_sort'])
 
     df['paidPrice'] = df['paidPrice'].astype(float)
-    df['sellerDiscountTotal'] = df['sellerDiscountTotal'].astype(float).fillna(-0.00)
+    df['unitPrice'] = df['unitPrice'].astype(float)
+    df['sellerDiscountTotal'] = df['sellerDiscountTotal'].astype(float).fillna(0)
 
-    df['paidPrice'] = df['paidPrice'] + df['sellerDiscountTotal']
+    df['paidPrice'] = df['unitPrice'] + df['sellerDiscountTotal']
+    df['paidPrice'] = df['paidPrice'].where(df['paidPrice'] >= 0, 0)
 
     for col in ['orderItemId','lazadaId','orderNumber']:
         df[col] = df[col].astype(str)
