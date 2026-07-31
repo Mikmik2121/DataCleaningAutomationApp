@@ -85,9 +85,9 @@ def clean_lazada(df):
     df = df.drop(columns=['Date_sort', 'Time_sort'])
 
     df['paidPrice'] = df['paidPrice'].astype(float)
-    df['sellerDiscountTotal'] = df['sellerDiscountTotal'].astype(float)
+    df['sellerDiscountTotal'] = pd.to_numeric(df['sellerDiscountTotal']
 
-    df['paidPrice'] = df['paidPrice'] + df['sellerDiscountTotal']
+    df['paidPrice'] = df['paidPrice'].fillna(0) + df['sellerDiscountTotal'].fillna(0)
 
     df = df.drop(columns=["sellerDiscountTotal"])
 
