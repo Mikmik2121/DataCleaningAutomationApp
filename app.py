@@ -64,7 +64,8 @@ def clean_lazada(df):
         'buyerFailedDeliveryReturnInitiator',
         'buyerFailedDeliveryReason',
         'buyerFailedDeliveryDetail',
-        'refundAmount'
+        'refundAmount',
+        'platformDiscountTotal'
     ]
     df = df[columns_to_keep].copy()
 
@@ -84,6 +85,11 @@ def clean_lazada(df):
     df = df.drop(columns=['Date_sort', 'Time_sort'])
 
     df['paidPrice'] = df['paidPrice'].astype(float)
+    df['platformDiscountTotal'] = df['platformDiscountTotal'].astype(float)
+
+    df['paidPrice'] = df['paidPrice'] - df['platformDiscountTotal']
+
+    df = df.drop(columns=["platformDiscountTotal"])
 
     for col in ['orderItemId','lazadaId','orderNumber']:
         df[col] = df[col].astype(str)
