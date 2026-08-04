@@ -258,12 +258,14 @@ def clean_shopify(df):
                 continue
         return pd.to_datetime(dt_str, errors='coerce')
 
-    df['Created at'] = df['Created at'].apply(try_parse_datetime)
+    # df['Created at'] = df['Created at'].apply(try_parse_datetime)
+    df['Created at'] = pd.to_datetime(df['Created at'], errors='coerce', utc=True, format='mixed')
     df = df.sort_values(by='Created at')
 
     df['Lineitem price'] = df['Lineitem price'] * df['Lineitem quantity']
 
-    df['Created at'] = pd.to_datetime(df['Created at'], utc=True).dt.strftime('%B %d, %Y')
+    # df['Created at'] = pd.to_datetime(df['Created at']).dt.strftime('%B %d, %Y')
+    df['Created at'] = df['Created at'].dt.strftime('%B %d, %Y')
 
     return df
 
