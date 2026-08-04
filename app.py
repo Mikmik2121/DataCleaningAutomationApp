@@ -263,7 +263,7 @@ def clean_shopify(df):
 
     df['Lineitem price'] = df['Lineitem price'] * df['Lineitem quantity']
 
-    df['Created at'] = pd.to_datetime(df['Created at'], utc=True).dt.strftime('%B %d, %Y')
+    df['Created at'] = pd.to_datetime(df['Created at']).dt.strftime('%B %d, %Y')
 
     return df
 
