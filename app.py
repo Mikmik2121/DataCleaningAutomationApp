@@ -9,16 +9,19 @@ st.set_page_config(page_title="Ecommerce Cleaner", layout="wide")
 
 st.title("📊 Raw Data Processing Tool")
 
-# Create a button to trigger the dialog
+# Button to trigger the dialog
 if st.button("Show Info"):
-    st.dialog(
+    # Open the dialog
+    with st.dialog(
         "Information",
         width="small",
         dismissible=True,
         icon="ℹ️",
         on_dismiss="ignore"
-    )
-    st.write("This is an informational pop‑up window. You can put any details here, like instructions, tips, or updates.")
+    ):
+        st.write("This is an informational pop‑up window.")
+        st.write("You can add more details here, like instructions, tips, or updates.")
+        st.success("✅ Pop‑up is working!")
 
 
 st.subheader("Instructions:")
