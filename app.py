@@ -15,7 +15,6 @@ def show_instructions():
     st.markdown("""
     ### Instructions:
 
-    Please follow these steps:
     - Before uploading, rename the files using this format: ```<BRAND>_<PLATFORM> (ex. VANS_SHOPEE)```
 
     - Upload ```.xlsx``` and ```.csv files``` (csv files for Shopify only). 
