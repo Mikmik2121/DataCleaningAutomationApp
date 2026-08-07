@@ -9,21 +9,6 @@ st.set_page_config(page_title="Ecommerce Cleaner", layout="wide")
 
 st.title("📊 Raw Data Processing Tool")
 
-# Button to trigger the dialog
-if st.button("Show Info"):
-    # Open the dialog
-    with st.dialog(
-        "Information",
-        width="small",
-        dismissible=True,
-        icon="ℹ️",
-        on_dismiss="ignore"
-    ):
-        st.write("This is an informational pop‑up window.")
-        st.write("You can add more details here, like instructions, tips, or updates.")
-        st.success("✅ Pop‑up is working!")
-
-
 st.subheader("Instructions:")
 st.write("- Upload .xlsx and .csv files (csv files for Shopify only). Before uploading, rename the files using this format: <BRAND>_<PLATFORM> (ex. VANS_SHOPEE)")
 st.write("- If Auto detector doesn't work, you can manually set the platform of the files you want to format.")
