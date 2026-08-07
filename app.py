@@ -8,6 +8,8 @@ import zipfile
 st.set_page_config(page_title="Ecommerce Cleaner", layout="wide")
 
 st.title("📊 Raw Data Processing Tool")
+st.dialog("Instructions", *, width="small", dismissible=True, icon=None, on_dismiss="ignore")
+
 st.subheader("Instructions:")
 st.write("- Upload .xlsx and .csv files (csv files for Shopify only). Before uploading, rename the files using this format: <BRAND>_<PLATFORM> (ex. VANS_SHOPEE)")
 st.write("- If Auto detector doesn't work, you can manually set the platform of the files you want to format.")
