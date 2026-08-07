@@ -7,7 +7,7 @@ import zipfile
 
 st.set_page_config(page_title="Ecommerce Cleaner", layout="wide")
 
-st.title("📊 E-Commerce Data Processing Tool")
+st.title("E-Commerce Data Processing Tool")
 
 @st.dialog("How to Use?")
 def show_instructions():
