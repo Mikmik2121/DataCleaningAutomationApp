@@ -16,10 +16,16 @@ def show_instructions():
     ### Instructions:
 
     Please follow these steps:
-    - Upload .xlsx and .csv files (csv files for Shopify only). Before uploading, rename the files using this format: <BRAND>_<PLATFORM> (ex. VANS_SHOPEE)
+    - Before uploading, **rename the files** using this format: <BRAND>_<PLATFORM> (ex. VANS_SHOPEE)
+
+    - Upload **.xlsx and .csv files** (csv files for Shopify only). 
+    
     - If Auto detector doesn't work, you can manually set the platform of the files you want to format.
-    - Wait for the app to process your data until a 'Download ALL as ZIP' button appears at the very bottom of the page.
+    
+    - Wait for the app to process your data until a **'Download ALL as ZIP'** button appears at the very bottom of the page.
+    
     - Download your clean files and you're done! :DD
+    
     """)
 
 if st.button("How to Use?"):
