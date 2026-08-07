@@ -10,26 +10,20 @@ st.set_page_config(page_title="Ecommerce Cleaner", layout="wide")
 st.title("📊 Raw Data Processing Tool")
 
 
-@st.dialog("Instructions")
+@st.dialog("How to Use?")
 def show_instructions():
     st.markdown("""
-    ### Welcome!
+    ### Instructions:
 
     Please follow these steps:
-    1. Upload your file.
-    2. Select the appropriate marketplace.
-    3. Click **Process**.
-    4. Download the cleaned file.
+    - Upload .xlsx and .csv files (csv files for Shopify only). Before uploading, rename the files using this format: <BRAND>_<PLATFORM> (ex. VANS_SHOPEE)
+    - If Auto detector doesn't work, you can manually set the platform of the files you want to format.
+    - Wait for the app to process your data until a 'Download ALL as ZIP' button appears at the very bottom of the page.
+    - Download your clean files and you're done! :DD
     """)
 
-if st.button("Show Instructions"):
+if st.button("How to Use?"):
     show_instructions()
-
-st.subheader("Instructions:")
-st.write("- Upload .xlsx and .csv files (csv files for Shopify only). Before uploading, rename the files using this format: <BRAND>_<PLATFORM> (ex. VANS_SHOPEE)")
-st.write("- If Auto detector doesn't work, you can manually set the platform of the files you want to format.")
-st.write("- Wait for the app to process your data until a 'Download ALL as ZIP' button appears at the very bottom of the page. ")
-st.write("- Download your clean files and you're done! :DD ")
 
 st.divider()
 
