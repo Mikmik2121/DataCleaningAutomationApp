@@ -320,7 +320,9 @@ def clean_tiktok(df):
       "Shipping Provider Name",
       # "Buyer Username",
       "Product Category",
-      "Package ID"
+      "Package ID",
+      "Order Channel",
+      "Creator Handle"
     ] 
     df = df[columns_to_keep].copy()
 
